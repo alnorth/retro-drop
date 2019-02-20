@@ -26,8 +26,6 @@ tar --ignore-failed-read -cvzf - */*.srm* */*.bsv* */*.sav* */*.sta* */*.fs* */*
     --header "Content-Type: application/octet-stream" \
     --data-binary @-
 
-cd -
-
 # List the current files in the folder so that we can see if we need to delete any.
 # We use python to parse the JSON data. RetroPie is using 2.7 still.
 to_delete=$(\

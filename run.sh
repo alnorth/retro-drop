@@ -29,7 +29,7 @@ zipfile_name="saved-games-${today}.tar.gz"
 cd ${rom_directory}
 
 # File patterns copied from https://retropie.org.uk/forum/topic/13108/script-to-backup-save-states-and-sram
-tar cvzf --ignore-failed-read --warning=failed-read - */*.srm* */*.bsv* */*.sav* */*.sta* */*.fs* */*.nv* */*.rtc* | \
+tar cvzf --ignore-failed-read - */*.srm* */*.bsv* */*.sav* */*.sta* */*.fs* */*.nv* */*.rtc* | \
   curl -X POST https://content.dropboxapi.com/2/files/upload \
     --header "Authorization: Bearer ${dropbox_access_token}" \
     --header "Dropbox-API-Arg: {\"path\": \"/${retropi_name}/${zipfile_name}\",\"mode\": \"add\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}" \

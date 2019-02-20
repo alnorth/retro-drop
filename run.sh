@@ -1,15 +1,5 @@
 #!/bin/bash
 
-# Simple script
-
-# - Generate zip file
-# - Upload zip file to Dropbox
-# - Get zip pattern right (copy an existing backup script)
-# - Read INI from the right path
-# - Only retain a certain number of zip files
-# - Make sure it copes gracefully with failed web requests
-# - Test out on RetroPie
-
 # Proper sign up experience
 
 # - Add config option to the retropie menu
@@ -35,3 +25,22 @@ tar --ignore-failed-read -cvzf - */*.srm* */*.bsv* */*.sav* */*.sta* */*.fs* */*
     --header "Dropbox-API-Arg: {\"path\": \"/${retropi_name}/${zipfile_name}\",\"mode\": \"add\",\"autorename\": true,\"mute\": false,\"strict_conflict\": false}" \
     --header "Content-Type: application/octet-stream" \
     --data-binary @-
+
+cd -
+
+# List the current files in the folder so that we can see if we need to delete any.
+# We use python to parse the JSON data. RetroPie is using 2.7 still.
+to_delete=$(\
+  curl -X POST https://api.dropboxapi.com/2/files/list_folder \
+    --header "Authorization: Bearer ${dropbox_access_token}" \
+    --header "Content-Type: application/json" \
+    --data "{\"path\": \"/${retropi_name}/\",\"recursive\": false,\"include_media_info\": false,\"include_deleted\": false,\"include_has_explicit_shared_members\": false,\"include_mounted_folders\": true}" | \
+  python -c "import sys, json; ns = [e['name'] for e in json.load(sys.stdin)['entries']]; print '\n'.join(ns[:-${copies_to_retain}])" \
+)
+
+for file in ${to_delete}; do
+  curl -X POST https://api.dropboxapi.com/2/files/delete_v2 \
+      --header "Authorization: Bearer ${dropbox_access_token}" \
+      --header "Content-Type: application/json" \
+      --data "{\"path\": \"/${retropi_name}/${file}\"}"
+done

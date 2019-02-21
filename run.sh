@@ -13,7 +13,7 @@
 
 . /opt/retropie/configs/retro-drop/config.ini
 
-today=`date +%Y%m%d-%H%M`
+today=`date -u +%Y%m%d-%H%M`
 zipfile_name="saved-games-${today}.tar.gz"
 
 cd ${rom_directory}

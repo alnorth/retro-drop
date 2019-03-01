@@ -10,6 +10,7 @@
 # Packaging up for installation via RetroPie interface
 
 # - How do the packages work?
+# - Contribute package to RetroPie
 
 . /opt/retropie/configs/retro-drop/config.ini
 
